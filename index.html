@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>customer</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+  <main class="bg-gray-50 px-8 gap-8 text-gray-800 min-h-screen pb-12">
+    <section class="max-w-screen-xl mx-auto relative">
+      <a href="./login.html" class="block absolute right-0 duration-200 bg-red-400 rounded-b-lg px-3 py-1 text-white
+        hover:bg-red-600 cursor-pointer font-bold">login
+      </a>
+      <h1 class="text-3xl text-center py-8 font-bold mb-3 uppercase tracking-wider	">Customer Products</h1>
+      <ul id="client-product-list" class="grid grid-cols-12 gap-16">
+      </ul>
+    </section>
+    <section class="flex justify-center mt-12">
+      <ul id="pagination-panel" class="flex pl-0 list-none rounded my-2">
+      </ul>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="./js/index.js"></script>
+</body>
+</html>
