@@ -9,7 +9,7 @@ const LEEE = {
       const { data } = await this.checkLoginStatus();
       console.log(data);
       if (data.success) this.handGetProducts();
-      else window.location.href = '../login.html';
+      else window.location.href = '../vue-live-week2/login.html';
     }
     catch(err) {
       console.dir(err);
@@ -23,7 +23,7 @@ const LEEE = {
     try {
       const { data } = await this.logOut();
       console.log(data);
-      if (data.success) window.location.href = '../index.html';
+      if (data.success) window.location.href = '../vue-live-week2/index.html';
     }
     catch(err) {
       console.dir(err);

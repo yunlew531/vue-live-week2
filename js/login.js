@@ -7,7 +7,7 @@ const LEEE = {
       const { data } = await this.checkLoginStatus();
       if (data.success) {
         resMessage.textContent = '已登入';
-        window.location.href = '../managePage.html'
+        window.location.href = '../vue-live-week2/managePage.html'
         console.log(data);
       }
       else resMessage.textContent = data.message;
@@ -24,7 +24,7 @@ const LEEE = {
     try {
       const { data } = await this.login();
       document.cookie = `Hegoze=${data.token};expires=${new Date(data.expired)};`;
-      if (data.success) window.location.href = '../managePage.html'
+      if (data.success) window.location.href = '../vue-live-week2/managePage.html'
       else resMessage.textContent = data.message;
     }
     catch(err) {
