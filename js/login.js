@@ -7,7 +7,9 @@ const LEEE = {
       const { data } = await this.checkLoginStatus();
       if (data.success) {
         resMessage.textContent = '已登入，跳轉中@@';
-        window.location.href = '../vue-live-week2/managePage.html'
+        setTimeout(()=>{
+          window.location.href = '../vue-live-week2/managePage.html'
+        }, 3000);
         console.log(data);
       }
       else resMessage.textContent = data.message;
