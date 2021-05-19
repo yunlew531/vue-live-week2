@@ -20,7 +20,6 @@ const LEEE = {
     const api = `${this.api}/logout`;
     try {
       const { data } = await axios.post(api);
-      console.log(data);
       if (data.success) {
         document.cookie = `Hegoze=;expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
         window.location.href = '../vue-live-week2/index.html';
