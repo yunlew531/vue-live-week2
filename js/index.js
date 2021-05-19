@@ -3,10 +3,11 @@ const LEEE = {
   path: 'yunlew',
   clientProductsData: [],
   pagination: {},
-  async handGetProducts(page = 1) {
+  async getProducts(page = 1) {
     try {
       const { data } = await this.getClientProducts(page);
       this.pagination = data.pagination;
+      console.log(data);
       this.clientProductsData = data.products;
       this.renderClientProducts();
     } 
@@ -21,13 +22,13 @@ const LEEE = {
   watchPaginationPanel(e) {
     if (e.target.dataset.page === 'pre') {
       const currentPage = this.pagination.current_page === 1 ? 1 : this.pagination.current_page - 1;
-      this.handGetProducts(currentPage);
+      this.getProducts(currentPage);
     } else if (e.target.dataset.page === 'next') {
       const currentPage = this.pagination.current_page === this.pagination.total_pages ? 1 : this.pagination.current_page + 1;
-      this.handGetProducts(currentPage);
+      this.getProducts(currentPage);
     } else {
       const currentPage = e.target.dataset.page;
-      this.handGetProducts(currentPage);
+      this.getProducts(currentPage);
     }
   },
   renderPagination() {
@@ -84,7 +85,7 @@ const LEEE = {
     this.renderPagination();
   },
   init() {
-    this.handGetProducts();
+    this.getProducts();
     paginationPanel.addEventListener('click', this.watchPaginationPanel.bind(this));
   },
 };

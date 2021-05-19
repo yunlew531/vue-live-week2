@@ -4,38 +4,44 @@ const LEEE = {
   token: '',
   products: [],
   pagination: {},
-  async handCheckLoginStatus() {
+  async checkLoginStatus() {
+    const api = `${this.api}/api/user/check`;
     try {
-      const { data } = await this.checkLoginStatus();
+      const { data } = await axios.post(api);
       console.log(data);
-      if (data.success) this.handGetProducts();
+      if (data.success) this.getProducts();
       else window.location.href = '../vue-live-week2/login.html';
     }
     catch(err) {
       console.dir(err);
     }
   },
-  checkLoginStatus() {
-    const api = `${this.api}/api/user/check`;
-    return axios.post(api);
-  },
-  async handLogOut() {
+  async logOut() {
+    const api = `${this.api}/logout`;
     try {
-      const { data } = await this.logOut();
+      const { data } = await axios.post(api);
       console.log(data);
-      if (data.success) window.location.href = '../vue-live-week2/index.html';
+      if (data.success) {
+        document.cookie = `Hegoze=;expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+        window.location.href = '../vue-live-week2/index.html';
+      }
+      else {
+          resMessage.textContent = '登出失敗!';
+          setTimeout(() => {
+          resMessage.textContent = '';
+        }, 3000)
+      }
+
     }
     catch(err) {
       console.dir(err);
     }
   },
-  logOut() {
-    const api = `${this.api}/logout`;
-    return axios.post(api);
-  },
-  async handGetProducts(page = 1) {
+  async getProducts(page = 1) {
+    const api = `${this.api}/api/${this.path}/admin/products?page=${page}`;
     try {
-      const { data } = await this.getProducts(page);
+      const { data } = await axios.get(api);
+      console.log(data);
       this.products =  data.products;
       this.pagination =  data.pagination;
       this.renderProducts();
@@ -44,15 +50,14 @@ const LEEE = {
       console.dir(err);
     }
   },
-  getProducts(page) {
-    const api = `${this.api}/api/${this.path}/admin/products?page=${page}`;
-    return axios.get(api);
-  },
-  async handDeleteProduct(id) {
+  async deleteProduct(id) {
+    const api = `${this.api}/api/${this.path}/admin/product/${id}`;
     try {
-      const { data } = await this.deleteProduct(id);
+      const { data } = await axios.delete(api);
+      if (data.success) resMessage.textContent = data.message;
+      else resMessage.textContent = data.message;
       resMessage.textContent = data.message;
-      this.handGetProducts();
+      this.getProducts();
       setTimeout(() => {
         resMessage.textContent = '';
       }, 3000);
@@ -61,17 +66,29 @@ const LEEE = {
       console.dir(err);
     }
   },
-  deleteProduct(id) {
-    const api = `${this.api}/api/${this.path}/admin/product/${id}`;
-    return axios.delete(api);
-  },
-  async handAddProduct() {
+  async addProduct() {
+    const api = `${this.api}/api/${this.path}/admin/product`;
+    const obj = {
+      data: {
+        imagesUrl: [],
+        title: title.value, 
+        category: category.value,
+        origin_price: parseInt(originPrice.value),
+        price: parseInt(price.value),
+        unit: productUnit.value,
+        description: description.value,
+        content: content.value,
+        is_enabled: isEnabled.checked,
+        imageUrl: imageUrl.value,
+        imagesUrl: [''],
+      }
+    };
     try {
-      const { data } = await this.addProduct();
+      const { data } = await axios.post(api, obj);
       resMessage.textContent = data.message;
       if (data.success) {
         addProductForm.reset();
-        this.handGetProducts();
+        this.getProducts();
         this.closeModal();
       }
       setTimeout(() => {
@@ -81,22 +98,6 @@ const LEEE = {
     catch(err) {
       console.dir(err);
     }
-  },
-  addProduct() {
-    const api = `${this.api}/api/${this.path}/admin/product`;
-    const data = {
-      imagesUrl: [],
-      title: title.value, 
-      category: category.value,
-      origin_price: parseInt(originPrice.value),
-      price: parseInt(price.value),
-      unit: productUnit.value,
-      description: description.value,
-      content: content.value,
-      is_enabled: isEnabled.checked,
-      imageUrl: imageUrl.value,
-    }
-    return axios.post(api, { data });
   },
   showAddProductModal() {
     addProductModal.classList.remove('hidden');
@@ -110,19 +111,19 @@ const LEEE = {
     const el = e.target;
     if (el.dataset.action === 'delete-product') {
       const id = el.closest('tr').dataset.id;
-      this.handDeleteProduct(id);
+      this.deleteProduct(id);
     }
   },
   watchPaginationPanel(e) {
     if (e.target.dataset.page === 'pre') {
       const currentPage = this.pagination.current_page === 1 ? 1 : this.pagination.current_page - 1;
-      this.handGetProducts(currentPage);
+      this.getProducts(currentPage);
     } else if (e.target.dataset.page === 'next') {
       const currentPage = this.pagination.current_page === this.pagination.total_pages ? 1 : this.pagination.current_page + 1;
-      this.handGetProducts(currentPage);
+      this.getProducts(currentPage);
     } else {
       const currentPage = e.target.dataset.page;
-      this.handGetProducts(currentPage);
+      this.getProducts(currentPage);
     }
   },
   renderPagination() {
@@ -193,12 +194,12 @@ const LEEE = {
   init() {
     this.token = document.cookie.replace(/(?:(?:^|.*;\s*)Hegoze\s*=\s*([^;]*).*$)|^.*$/, '$1');
     axios.defaults.headers.common['Authorization'] = this.token;
-    this.handCheckLoginStatus();
-    logOutBtn.addEventListener('click', this.handLogOut.bind(this));
+    this.checkLoginStatus();
+    logOutBtn.addEventListener('click', this.logOut.bind(this));
     productsList.addEventListener('click', this.watchProductsList.bind(this));
     addProductModalBtn.addEventListener('click', this.showAddProductModal);
     closeModalBtn.addEventListener('click', this.closeModal);
-    addProductBtn.addEventListener('click', this.handAddProduct.bind(this));
+    addProductBtn.addEventListener('click', this.addProduct.bind(this));
     paginationPanel.addEventListener('click', this.watchPaginationPanel.bind(this));
   }
 };
